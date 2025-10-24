@@ -121,12 +121,12 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
   const canVerify = otp.every(Boolean) && !verifying;
 
   return (
-    <div className={`max-w-md mx-auto p-2  ${className}`}>
+    <div className={`max-w-md  p-2  ${className}`}>
       <div className="mb-12">
         <h1 className="md:text-[40px] text-3xl font-bold text-[#17171C] mb-3">
-          Verify your email address
+          Provide 6-digit code
         </h1>
-        <p className="text-[#414F62] text-sm font-medium">
+        <p className="text-[#414F62] text-[16px] font-medium">
           Please enter the verification code sent to <br /> your email address{" "}
           <span className="font-medium">{maskEmail(email)}</span>
         </p>
@@ -200,10 +200,10 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
         className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all ${
           canVerify
             ? "bg-[#5E2A8C] hover:bg-[#5E2A8C] shadow-sm hover:shadow-md"
-            : "bg-gray-400 cursor-not-allowed"
+            : "bg-[#5E2A8C] cursor-not-allowed"
         }`}
       >
-        {verifying ? "Verifying..." : "Verify"}
+        {verifying ? "Verifying..." : "continue"}
       </button>
 
       <div className="text-center mt-6">
