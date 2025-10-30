@@ -3,6 +3,7 @@ import { Eye, EyeOff, Mail } from "lucide-react";
 import left from "./loginimages/Left.png";
 import mobilelogo from "../../public/logo/mologo.png";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface LoginFormData {
   email: string;
@@ -32,6 +33,7 @@ export default function LoginPage({
   onAppleLogin,
   onForgotPassword,
 }: LoginPageProps) {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<LoginFormData>({
@@ -61,16 +63,44 @@ export default function LoginPage({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setIsLoading(true);
-    setTimeout(() => {
-      console.log("Login:", formData);
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      if (response.ok) {
+        router.push("/dashboard");
+      } else {
+        alert("Login failed");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Login failed");
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!validateForm()) return;
+
+  //   setIsLoading(true);
+  //   setTimeout(() => {
+  //     console.log("Login:", formData);
+  //     setIsLoading(false);
+  //   }, 1500);
+  // };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;

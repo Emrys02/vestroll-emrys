@@ -8,6 +8,8 @@ import ContractorIllustration from "./ui/contractor_illustration";
 import Image from "next/image";
 import mobileLogo from "../../public/logo/mologo.png";
 import leftImage from "../../public/images/Left.png";
+import { useRouter } from "next/navigation";
+import freelanceIllustration from "../../public/images/freelancerillu.png";
 const accountTypes = [
   {
     id: "business",
@@ -18,7 +20,15 @@ const accountTypes = [
   {
     id: "freelancer",
     name: "Freelancer",
-    icon: <FreelancerIllustration />,
+    icon: (
+      <Image
+        src={freelanceIllustration}
+        alt="Freelancer Illustration"
+        width={150} // Adjust size as needed
+        height={150} // Adjust size as needed
+        className="object-contain"
+      />
+    ),
     description: "For independent professionals",
   },
   {
@@ -31,6 +41,7 @@ const accountTypes = [
 
 export default function VestRollAccountSelection() {
   const [selectedType, setSelectedType] = useState<string>("");
+  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-gray-50 lg:bg-white">
@@ -67,25 +78,27 @@ export default function VestRollAccountSelection() {
             </p>
 
             {/* Account Type Cards */}
-            <div className="grid grid-cols-3 gap-3 lg:gap-4 mb-8 lg:mb-12">
+            <div className="flex justify-center gap-6 lg:gap-8 mb-8 lg:mb-12">
               {accountTypes.map((type) => (
-                <div
-                  key={type.id}
-                  className={`p-4 lg:p-6 cursor-pointer transition-all hover:shadow-md ${
-                    selectedType === type.id
-                      ? "ring-2 ring-purple-600 bg-purple-50"
-                      : "hover:bg-gray-50"
-                  }`}
-                  onClick={() => setSelectedType(type.id)}
-                >
-                  <div className="text-center">
-                    <div className="mb-4 flex items-center justify-center h-24  w-24  mx-auto">
+                <div key={type.id} className="flex flex-col items-center">
+                  <div
+                    className={`w-24 h-24 lg:w-32 lg:h-32 p-4 cursor-pointer transition-all border-2 flex items-center justify-center ${
+                      selectedType === type.id
+                        ? "ring-2 ring-purple-600 bg-purple-50 border-purple-600"
+                        : "hover:bg-gray-50 border-gray-200"
+                    } rounded-full`}
+                    onClick={() => {
+                      console.log("Selected:", type.id);
+                      setSelectedType(type.id);
+                    }}
+                  >
+                    <div className="flex items-center justify-center">
                       {type.icon}
                     </div>
-                    <h3 className="font-medium text-gray-900 text-sm lg:text-base">
-                      {type.name}
-                    </h3>
                   </div>
+                  <h3 className="font-medium text-gray-900 text-sm lg:text-base mt-3 text-center">
+                    {type.name}
+                  </h3>
                 </div>
               ))}
             </div>
@@ -94,6 +107,9 @@ export default function VestRollAccountSelection() {
             <Button
               className="w-full h-[56px] bg-purple-600 hover:bg-purple-700 text-white py-3 lg:py-4 text-base lg:text-lg font-medium rounded-lg"
               disabled={!selectedType}
+              onClick={() =>
+                router.push(`/onboarding?accountType=${selectedType}`)
+              }
             >
               Continue
             </Button>

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import left from "./loginimages/Left.png";
+import { useRouter } from "next/navigation";
 
 // Type definitions
 interface FormData {
@@ -15,6 +16,7 @@ interface FormErrors {
 }
 
 const ForgotPasswordForm: React.FC = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     email: "",
   });
@@ -49,13 +51,81 @@ const ForgotPasswordForm: React.FC = () => {
 
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Reset password request:", formData);
-      alert("Reset link sent to your email!");
+    try {
+      const response = await fetch("/api/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("OTP request request successful:", formData);
+
+        // Redirect to OTP input page with email as query parameter
+        router.push(
+          `/reset-password-otp?email=${encodeURIComponent(formData.email)}`
+        );
+      } else {
+        console.error("Reset password failed:", result.message);
+        alert(result.message || "Failed to send reset link. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending reset link:", error);
+      alert("Network error. Please check your connection and try again.");
+    } finally {
       setIsSubmitting(false);
-    }, 2000);
+    }
   };
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (!validateForm()) {
+  //     return;
+  //   }
+
+  //   setIsSubmitting(true);
+
+  //   // Simulate API call
+  //   setTimeout(() => {
+  //     console.log("Reset password request:", formData);
+  //     alert("Reset link sent to your email!");
+  //     setIsSubmitting(false);
+  //   }, 2000);
+  // };
+
+  // for testing
+  //   const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (!validateForm()) {
+  //     return;
+  //   }
+
+  //   setIsSubmitting(true);
+
+  //   try {
+  //     await new Promise(resolve => setTimeout(resolve, 2000));
+
+  //     // Simulate successful API response
+  //     console.log("Reset password request:", formData);
+
+  //     // Redirect to OTP input page with email
+  //     router.push(`/reset-password-otp?email=${encodeURIComponent(formData.email)}`);
+
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     alert("An error occurred. Please try again.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -83,7 +153,7 @@ const ForgotPasswordForm: React.FC = () => {
         </div>
 
         {/* Right Side - Form Section */}
-        <div className="relative w-full lg:w-2/5 flex flex-col items-center justify-start  px-4 sm:px-8 lg:px-12 bg-white">
+        <div className="relative w-full lg:w-2/5 flex  justify-start  px-4 sm:px-8 lg:px-12 bg-white">
           <div className="w-full max-w-md">
             {/* Form Content */}
             <div className="mb-10">
