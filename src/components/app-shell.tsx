@@ -105,7 +105,7 @@ export default function AppShell({
 
                   {/* Notification Modal Dropdown */}
                   {isNotificationOpen && (
-                    <div className="absolute right-1 md:right-10 top-full mt-2 z-50 w-80 lg:w-[450px]">
+                    <div className="absolute -right-10 md:right-10 top-full mt-2 z-50 w-80 lg:w-[450px]">
                       <NotificationsModal onClose={() => setIsNotificationOpen(false)} />
                     </div>
                   )}
