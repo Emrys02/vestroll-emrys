@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import avatar from "../../public/avatar/avatar.png";
 import Image, { StaticImageData } from "next/image";
 import MobileHeader from "./mobile-header";
@@ -8,6 +8,7 @@ import DesktopHeader from "./desktop-header";
 import Sidebar from "./sidebar";
 import Link from "next/link";
 import { Bell, Menu, MenuIcon, Search } from "lucide-react";
+import NotificationsModal from "./dashboard/NotificationsModal";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -29,6 +30,32 @@ export default function AppShell({
   },
 }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false)
+  const notificationRef = useRef<HTMLDivElement>(null)
+
+  // Close modal when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
+      ) {
+        setIsNotificationOpen(false)
+      }
+    }
+
+    if (isNotificationOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isNotificationOpen])
+
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen)
+  }
 
   return (
     <div className="min-h-screen bg-[#f3f4f6]">
@@ -68,10 +95,21 @@ export default function AppShell({
                   <Search className="w-5 h-5" />
                 </div>
 
-                <button className="relative p-2 hover:bg-gray-100 bg-white border border-[#DCE0E5] rounded-full transition-colors">
-                  <Bell className="w-6 h-6 text-gray-600" />
-                  <span className="absolute top-1 right-3 w-2 h-2 bg-[#5E2A8C] rounded-full"></span>
-                </button>
+                <div className="relative" ref={notificationRef}>
+                    <button className="relative p-2 hover:bg-gray-100 bg-white border border-[#DCE0E5] rounded-full transition-colors cursor-pointer"
+                    onClick={toggleNotification}
+                  >
+                    <Bell className="w-6 h-6 text-gray-600" />
+                    <span className="absolute top-1 right-3 w-2 h-2 bg-[#5E2A8C] rounded-full"></span>
+                  </button>
+
+                  {/* Notification Modal Dropdown */}
+                  {isNotificationOpen && (
+                    <div className="absolute right-1 md:right-10 top-full mt-2 z-50 w-80 lg:w-[450px]">
+                      <NotificationsModal onClose={() => setIsNotificationOpen(false)} />
+                    </div>
+                  )}
+                </div>
 
                 <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
                   <div className="relative">
