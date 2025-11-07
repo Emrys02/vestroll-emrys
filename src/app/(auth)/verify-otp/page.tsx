@@ -30,14 +30,13 @@ function VerifyOTPPage() {
 
   return (
     <AuthLayer>
-      <div className="max-w-md mx-auto space-y-12">
+      <div className="max-w-md mx-auto">
         <OTPVerification
           email={mockEmail}
           onVerify={handleVerify}
           onResend={handleResend}
           onGoBack={handleGoBack}
           resendCooldown={60}
-          className="mt-8"
         />
       </div>
     </AuthLayer>

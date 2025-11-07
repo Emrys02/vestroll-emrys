@@ -28,16 +28,16 @@ export default function ModalDdntGetEmail({ open = true }: { open: boolean }) {
         <AlertDialogHeader className="max-w-2xs !text-center m-auto">
           <Image
             src="/IconDidnt.png"
-            alt="success"
+            alt="didn't"
             width={120}
             height={120}
             className="mx-auto mb-5 mt-12"
           />
-          <AlertDialogTitle className="font-bold text-[28px] text-text-header">
+          <AlertDialogTitle className="font-bold text-[28px] text-text-header !text-left">
             Didn&apos;t Get the Email?
           </AlertDialogTitle>
           <AlertDialogDescription className="font-medium text-xs mx-10 text-text-subtext">
-            <ul>
+            <ul className="text-[10px] space-y-2 list-disc pl-4">
               <li>
                 Check your spam or junk folder - sometimes, emails get filtered.
               </li>

@@ -25,7 +25,6 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({
   resendCooldown = 60,
   otpLength = 6,
   className = "",
-  onGoBack,
 }) => {
   const [otp, setOtp] = useState<string[]>(Array(otpLength).fill(""));
   const [error, setError] = useState("");
@@ -213,16 +212,6 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({
           className="text-sm text-[#5E2A8C] hover:text-[#5E2A8C]/70 font-medium disabled:text-gray-400 disabled:cursor-not-allowed"
         >
           Didn&apos;t get the code?
-        </button>
-      </div>
-
-      <div className="text-center mb-4">
-        <button
-          type="button"
-          onClick={onGoBack}
-          className="text-sm text-[#5E2A8C] hover:underline"
-        >
-          Go back
         </button>
       </div>
     </div>
