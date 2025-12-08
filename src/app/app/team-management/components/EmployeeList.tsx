@@ -5,6 +5,7 @@ import Image from "next/image";
 import { UserCircle } from "lucide-react";
 import { Employee } from "@/types/teamManagement.types";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 type EmployeeListProps = {
   employees: Employee[];
@@ -14,9 +15,10 @@ export const EmployeeList = ({ employees }: EmployeeListProps) => {
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
       {employees.map((employee) => (
-        <div
+        <Link
+          href={`/app/team-management/${employee.id}`}
           key={employee.id}
-          className="bg-white rounded-xl p-3.5"
+          className="bg-white rounded-xl p-3.5 cursor-pointer"
         >
           {/* Top section: Avatar + Name/Role */}
           <div className="flex items-center gap-4 mb-6">
@@ -68,7 +70,7 @@ export const EmployeeList = ({ employees }: EmployeeListProps) => {
               {employee.status}
             </Badge>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );
