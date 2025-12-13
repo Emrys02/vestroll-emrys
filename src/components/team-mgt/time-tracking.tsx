@@ -1,7 +1,7 @@
 import EmptyState from "@/components/ui/EmptyState";
 import { Check, XCircle, Clock, Clock4Icon, Zap, XIcon, ClockIcon, BuildingIcon, ExternalLink, UserIcon, X } from "lucide-react";
 import { cn } from "@/utils/classNames";
-import { Timesheet, timesheets } from "@/data/time-sheets";
+import { Timesheet, timesheets } from "@/data/team-mgt";
 import { currencies } from "@/util/constant";
 import { useState } from "react";
 import { CheckMarkIcon } from "../../../public/svg";
@@ -220,7 +220,7 @@ function TeamMgtTimeSheet() {
                 </div>
 
                 <div className="space-y-4">
-                    <div className="flex bg-gray-100 py-1 px-1  justify-between text-sm">
+                    <div className="flex bg-gray-100 py-1 px-1 justify-between text-sm">
                         <p className="text-gray-500">Rate</p>
                         <p className="text-gray-500">Total amount</p>
                     </div>
@@ -269,7 +269,7 @@ function TeamMgtTimeSheet() {
                         </div>
                     </div>
                     <button className="text-purple-600 relative top-3 gap-1 flex items-center text-sm hover:underline">
-                        View details
+                        View contract
 
                         <ExternalLink size={15}/>
                     </button>
