@@ -175,8 +175,8 @@ const TeamManagementDashboard = () => {
                 onToggle={() => setIsExportOpen(!isExportOpen)}
               />
               {activeTab === "Time off" && (
-                <Link className="flex items-center gap-2 bg-primary-500 text-white h-10 px-4 rounded-lg" href={"/app/team-management/create-timeoff"}>
-                  <Plus /> Create request
+                <Link className="flex items-center gap-2 bg-primary-500 text-white md:h-10 px-4 rounded-lg" href={"/app/team-management/create-timeoff"}>
+                  <Plus /> <span className="hidden md:inline">Create request</span>
                 </Link>
               )}
             </div>
