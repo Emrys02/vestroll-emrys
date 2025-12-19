@@ -3,6 +3,7 @@
 import React from "react";
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 interface BalanceSectionProps {
   balance: string;
@@ -15,6 +16,7 @@ export function BalanceSection({
   change,
   title = "Total balance",
 }: BalanceSectionProps) {
+  const router = useRouter();
   const isPositive = change.includes("+");
 
   const handleFundWallet = () => {
@@ -22,7 +24,7 @@ export function BalanceSection({
   };
 
   const handleWithdraw = () => {
-    console.log("Withdraw clicked");
+    router.push("/app/finance/withdraw");
   };
 
   return (

@@ -60,19 +60,12 @@ export default function FinancePage() {
         <div className="max-w-[1400px] mx-2">
           {/* Balance Section in Grid */}
           <div className="mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="">
               <BalanceSection
                 balance="$5,050.00"
                 change="-0.0051% ($0.99)"
                 title="Total Balance"
               />
-              <div className="hidden md:block">
-                <BalanceSection
-                  balance="$12,560.30"
-                  change="+2.5% this month"
-                  title="Available Balance"
-                />
-              </div>
             </div>
           </div>
 
