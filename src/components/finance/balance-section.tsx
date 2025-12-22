@@ -20,7 +20,7 @@ export function BalanceSection({
   const isPositive = change.includes("+");
 
   const handleFundWallet = () => {
-    console.log("Fund wallet clicked");
+    router.push("/app/finance/receive");
   };
 
   const handleWithdraw = () => {

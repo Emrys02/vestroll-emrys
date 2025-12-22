@@ -3,63 +3,85 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ChevronDown, Plus } from "lucide-react";
+import { ArrowLeft, ChevronDown, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MOCK_ASSETS } from "@/lib/mock-data";
 import Image from "next/image";
-import { AddressBookModal } from "@/components/finance/addressbook-modal";
-import { AddAddressModal } from "@/components/finance/add-address-modal";
 
 export default function WithdrawPage() {
   const router = useRouter();
-  const [selectedAsset, setSelectedAsset] = useState<string>("USDT");
-  const [selectedNetwork, setSelectedNetwork] = useState<string>("Ethereum");
   const [amount, setAmount] = useState<string>("");
-  const [recipientAddress, setRecipientAddress] = useState<string>("");
-  const [showAssetDropdown, setShowAssetDropdown] = useState<boolean>(false);
-  const [showNetworkDropdown, setShowNetworkDropdown] =
-    useState<boolean>(false);
-  const [showAddressBookModal, setShowAddressBookModal] =
-    useState<boolean>(false);
-  const [showAddAddressModal, setShowAddAddressModal] =
-    useState<boolean>(false);
+  const [selectedWallet, setSelectedWallet] = useState<string>("NGN");
+  const [showWalletDropdown, setShowWalletDropdown] = useState<boolean>(false);
+
+  // Mock data for fiat wallets
+  const fiatWallets = [
+    {
+      currency: "NGN",
+      balance: "₦1,500,000.00",
+      currencyName: "Nigerian Naira",
+      symbol: "₦",
+      imgPath: "/images/emojione_flag-for-nigeria_fiat.png",
+    },
+    {
+      currency: "USD",
+      balance: "$5,050.00",
+      currencyName: "US Dollar",
+      symbol: "$",
+      imgPath: "/images/circle-flags_us-fiat.png",
+    },
+    {
+      currency: "EUR",
+      balance: "€4,250.00",
+      currencyName: "Euro",
+      symbol: "€",
+      imgPath: "/images/emojione_flag-for-european-union_fiat.png",
+    },
+    {
+      currency: "GBP",
+      balance: "£3,800.00",
+      currencyName: "British Pound",
+      symbol: "£",
+      imgPath: "/images/circle-flags_uk_fiat.png",
+    },
+  ];
+
+  const selectedWalletData =
+    fiatWallets.find((w) => w.currency === selectedWallet) || fiatWallets[0];
 
   const handleGoBack = () => {
     router.back();
   };
 
   const handleContinue = () => {
-    // Navigate to confirmation page with data as URL params
     const params = new URLSearchParams({
-      asset: selectedAsset,
-      network: selectedNetwork,
       amount: amount,
-      address: recipientAddress,
+      currency: selectedWallet,
     });
 
-    router.push(`/app/finance/withdraw/confirm?${params.toString()}`);
+    router.push(
+      `/app/finance/withdraw/withdraw-bank-details?${params.toString()}`
+    );
   };
 
   const handleMax = () => {
-    const asset = MOCK_ASSETS.find((a) => a.symbol === selectedAsset);
-    if (asset) {
-      setAmount(asset.balance.replace("$", ""));
-    }
+    const balanceValue = selectedWalletData.balance.replace(/[^\d.-]/g, "");
+    setAmount(balanceValue);
   };
 
-  const handleSaveAddress = (address: string, network: string) => {
-    console.log("Address saved:", { name, address, network });
-    setShowAddAddressModal(false);
+  const isContinueDisabled = () => {
+    if (!amount || parseFloat(amount) <= 0) return true;
+
+    // Check if withdrawal amount exceeds balance
+    const numericAmount = parseFloat(amount);
+    const numericBalance = parseFloat(
+      selectedWalletData.balance.replace(/[^\d.-]/g, "")
+    );
+
+    return numericAmount > numericBalance;
   };
-
-  const networks = ["Ethereum", "Polygon", "Arbitrum", "Optimism", "Stellar"];
-
-  const selectedAssetDetails =
-    MOCK_ASSETS.find((a) => a.symbol === selectedAsset) || MOCK_ASSETS[0];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white border-b border-gray-200 px-4 py-5 md:px-6 lg:px-2">
         <div className="max-w-[1400px] mx-2">
           <button
@@ -75,137 +97,75 @@ export default function WithdrawPage() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="p-4 md:p-6 lg:p-8">
         <div className="max-w-xl mx-auto">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">
-              Withdrawal Details
-            </h2>
-
             <form className="space-y-6">
-              {/* Asset Selection Dropdown */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Asset
+                  Wallet
                 </label>
                 <div className="relative">
                   <button
                     type="button"
-                    onClick={() => {
-                      setShowAssetDropdown(!showAssetDropdown);
-                      setShowNetworkDropdown(false);
-                    }}
+                    onClick={() => setShowWalletDropdown(!showWalletDropdown)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg flex items-center justify-between hover:border-gray-400 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center"
-                        style={{
-                          backgroundColor: selectedAssetDetails.bgColor
-                            .replace("bg-[", "")
-                            .replace("]", ""),
-                        }}
-                      >
+                      <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
                         <Image
-                          width={20}
-                          height={20}
-                          src={selectedAssetDetails.icon}
-                          alt={selectedAssetDetails.symbol}
-                          className="w-4 h-4"
+                          src={selectedWalletData.imgPath}
+                          alt={`${selectedWalletData.currencyName} flag`}
+                          width={40}
+                          height={40}
+                          className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="text-left">
                         <span className="font-medium text-gray-900 block">
-                          {selectedAssetDetails.name}
+                          {selectedWalletData.currencyName}
                         </span>
                         <span className="text-sm text-gray-500">
-                          {selectedAssetDetails.symbol}
+                          {selectedWalletData.currency} Wallet
                         </span>
                       </div>
                     </div>
                     <ChevronDown className="h-5 w-5 text-gray-400" />
                   </button>
 
-                  {/* Asset Dropdown Menu */}
-                  {showAssetDropdown && (
-                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                      {MOCK_ASSETS.map((asset) => (
-                        <button
-                          key={asset.id}
-                          type="button"
-                          onClick={() => {
-                            setSelectedAsset(asset.symbol);
-                            setShowAssetDropdown(false);
-                          }}
-                          className="w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
-                        >
-                          <div
-                            className="w-8 h-8 rounded-full flex items-center justify-center"
-                            style={{
-                              backgroundColor: asset.bgColor
-                                .replace("bg-[", "")
-                                .replace("]", ""),
-                            }}
-                          >
-                            <Image
-                              width={20}
-                              height={20}
-                              src={asset.icon}
-                              alt={asset.name}
-                              className="w-4 h-4"
-                            />
-                          </div>
-                          <span className="font-medium text-gray-900">
-                            {asset.name}
-                          </span>
-                          {selectedAsset === asset.symbol && (
-                            <div className="ml-auto">
-                              <div className="w-2 h-2 rounded-full bg-purple-900"></div>
-                            </div>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Network Selection Dropdown */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Network
-                </label>
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowNetworkDropdown(!showNetworkDropdown);
-                      setShowAssetDropdown(false);
-                    }}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg flex items-center justify-between hover:border-gray-400 transition-colors"
-                  >
-                    <span className="font-medium text-gray-900">
-                      {selectedNetwork}
-                    </span>
-                    <ChevronDown className="h-5 w-5 text-gray-400" />
-                  </button>
-
-                  {/* Network Dropdown Menu */}
-                  {showNetworkDropdown && (
+                  {showWalletDropdown && (
                     <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
-                      {networks.map((network) => (
+                      {fiatWallets.map((wallet) => (
                         <button
-                          key={network}
+                          key={wallet.currency}
                           type="button"
                           onClick={() => {
-                            setSelectedNetwork(network);
-                            setShowNetworkDropdown(false);
+                            setSelectedWallet(wallet.currency);
+                            setShowWalletDropdown(false);
+                            setAmount("");
                           }}
                           className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
                         >
-                          <span className="text-gray-900">{network}</span>
-                          {selectedNetwork === network && (
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
+                              <Image
+                                src={wallet.imgPath}
+                                alt={`${wallet.currencyName} flag`}
+                                width={32}
+                                height={32}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="text-left">
+                              <span className="font-medium text-gray-900 block">
+                                {wallet.currencyName}
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                Balance: {wallet.balance}
+                              </span>
+                            </div>
+                          </div>
+                          {selectedWallet === wallet.currency && (
                             <div className="w-2 h-2 rounded-full bg-purple-900"></div>
                           )}
                         </button>
@@ -214,11 +174,10 @@ export default function WithdrawPage() {
                   )}
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  Select the network for withdrawal
+                  Select wallet to withdraw from
                 </p>
               </div>
 
-              {/* Amount Input */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-sm font-medium text-gray-700">
@@ -227,86 +186,57 @@ export default function WithdrawPage() {
                   <div className="text-right">
                     <p className="text-xs text-gray-500">Available Balance</p>
                     <p className="text-sm font-medium text-gray-900">
-                      {selectedAssetDetails.balance}
+                      {selectedWalletData.balance}
                     </p>
                   </div>
                 </div>
                 <div className="relative">
                   <input
-                    type="text"
+                    type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0.00"
                     className="w-full px-4 py-3 pl-16 text-black border border-gray-300 rounded-lg text-lg font-medium focus:outline-none focus:ring-2 focus:ring-purple-900 focus:border-transparent"
+                    min="0"
+                    step="0.01"
                   />
                   <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                    <span className="text-gray-500">$</span>
-                  </div>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                    <span className="text-gray-900 font-medium">
-                      {selectedAsset}
+                    <span className="text-gray-500">
+                      {selectedWalletData.symbol}
                     </span>
                   </div>
-                </div>
-                <div className="flex justify-end mt-2">
-                  <button
-                    type="button"
-                    onClick={handleMax}
-                    className="text-sm text-purple-900 hover:text-purple-700 font-medium"
-                  >
-                    Use Max
-                  </button>
-                </div>
-              </div>
-
-              {/* Recipient Address with Address Book link */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Send To
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setShowAddressBookModal(true)}
-                    className="text-sm text-purple-900 hover:text-purple-700 font-medium flex items-center gap-1"
-                  >
-                    <Plus className="h-3 w-3" />
-                    Address Book
-                  </button>
-                </div>
-                <input
-                  type="text"
-                  value={recipientAddress}
-                  onChange={(e) => setRecipientAddress(e.target.value)}
-                  placeholder="0x742d35Cc6634C0532925a3b844Bc9e...e37e05"
-                  className="w-full px-4 py-3 border text-black border-gray-300 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-purple-900 focus:border-transparent"
-                />
-                <p className="text-xs text-gray-500 mt-2">
-                  Enter the recipient&apos;s wallet address
-                </p>
-              </div>
-
-              {/* Network Fee */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">
-                      Network Fee
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Estimated fee for {selectedNetwork} network
-                    </p>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                    <button
+                      type="button"
+                      onClick={handleMax}
+                      className="px-3 py-1 text-sm bg-purple-900 text-white rounded-lg hover:bg-purple-800 transition-colors"
+                    >
+                      Max
+                    </button>
                   </div>
-                  <p className="text-lg font-semibold text-gray-900">$0.50</p>
                 </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Enter the amount you want to withdraw
+                </p>
+
+                {amount &&
+                  parseFloat(amount) >
+                    parseFloat(
+                      selectedWalletData.balance.replace(/[^\d.-]/g, "")
+                    ) && (
+                    <p className="text-xs text-red-600 mt-1">
+                      Insufficient balance. Maximum withdrawal is{" "}
+                      {selectedWalletData.balance}
+                    </p>
+                  )}
               </div>
 
-              <div className="mt-30 px-2">
+              <div className="pt-4">
                 <Button
                   type="button"
                   onClick={handleContinue}
                   className="w-full p-6 bg-purple-900 hover:bg-purple-800 font-bold text-lg text-white"
-                  disabled={!amount || !recipientAddress}
+                  disabled={isContinueDisabled()}
                 >
                   Continue
                 </Button>
@@ -316,28 +246,11 @@ export default function WithdrawPage() {
         </div>
       </div>
 
-      {/* Modals */}
-      <AddressBookModal
-        isOpen={showAddressBookModal}
-        onClose={() => setShowAddressBookModal(false)}
-        onSelectAddress={setRecipientAddress}
-        onOpenAddAddress={() => setShowAddAddressModal(true)}
-      />
-
-      <AddAddressModal
-        isOpen={showAddAddressModal}
-        onClose={() => setShowAddAddressModal(false)}
-        onSave={handleSaveAddress}
-      />
-
-      {/* Close dropdowns when clicking outside */}
-      {(showAssetDropdown || showNetworkDropdown) && (
+      {/* Close dropdown when clicking outside */}
+      {showWalletDropdown && (
         <div
           className="fixed inset-0 z-0"
-          onClick={() => {
-            setShowAssetDropdown(false);
-            setShowNetworkDropdown(false);
-          }}
+          onClick={() => setShowWalletDropdown(false)}
         />
       )}
     </div>
