@@ -1,6 +1,6 @@
 # VestRoll Payroll System - Web Application
 
-VestRoll is a Payroll management platform designed for modern businesses. Built with **Next.js 15**, **TypeScript**, and **React 19**, it provides a seamless experience for managing contracts, invoices, expenses, team members and financial operations.
+VestRoll is a Payroll management platform built for modern businesses. Built with **Next.js 15**, **TypeScript**, and **React 19**, it provides a smooth experience for managing contracts, team members, and financial operations. By leveraging the **Stellar configuration**, VestRoll ensures fast, low-cost, and secure stablecoin interactions, making global payroll efficient and accessible.
 
 ---
 
@@ -26,6 +26,10 @@ VestRoll is a Payroll management platform designed for modern businesses. Built 
 - **Charts**: [Recharts](https://recharts.org/)
 - **Themes**: `next-themes` (Dark/Light mode support)
 
+### Web3 & Finance
+
+- **Stellar Integration**: specialized infrastructure for high-speed stablecoin payments
+- **Utilities**: `date-fns`, `html2canvas`, `jspdf` for invoice generation
 
 ---
 
@@ -66,12 +70,29 @@ vestroll/
 
 ## ✨ Key Features
 
-- **Automated Payroll**: Schedule and execute payments in fiat or stablecoin.
+- **Automated Payroll**: Schedule and execute payments in fiat or cryptocurrency.
 - **Contract Management**: Multi-step creation flow for Fixed Rate, Pay As You Go, and Milestone-based contracts.
-- **Crypto-Ready**: Support for USDT and USDC payments.
+- **Crypto-Ready**: Integrated wallet support for stablecoin payments (USDC), leveraging the **Stellar Network** for fast, low-cost settlement.
 - **Finance Analytics**: Real-time tracking of expenses, payouts, and balance metrics.
-- **Team Management**: Large directory for managing employees and contractors with permission controls.
+- **Team Management**: Robust directory for managing employees and contractors with permission controls.
 - **Compliance & Invoicing**: Automated invoice generation (PDF/Image) and compliance tracking.
+
+---
+
+## 🎯 Target Audience & Ecosystem Impact
+
+### Who is this for?
+
+- **Global Enterprises**: Companies with distributed teams needing seamless cross-border payroll.
+- **DAO & Web3 Organizations**: Native crypto organizations requiring fiat and stablecoin payroll solutions.
+- **Freelancers & Contractors**: Individuals seeking transparent, instant, and low-fee payments.
+
+### Contribution to the Stellar Ecosystem
+
+VestRoll plays a pivotal role in the **Stellar ecosystem** by:
+
+1.  **Driving Real-World Utility**: Moving beyond speculation to practical, high-volume stablecoin use cases (Payroll).
+2.  **Highlighting Efficiency**: Showcasing Stellar's speed and low fees for frequent, small-to-large value transactions.
 
 ---
 
@@ -87,7 +108,7 @@ vestroll/
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/SafeVault/vestroll.git
+   git clone https://github.com/SafeVault/vestroll-frontend.git
    cd vestroll
    ```
 
